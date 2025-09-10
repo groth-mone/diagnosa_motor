@@ -20,4 +20,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-# https://www.its.ac.id/dptsi/aktivasi-windows-untuk-dosen-tendik-dengan-kms/
