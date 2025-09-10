@@ -1,0 +1,36 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Daftar user</h2>
+<a href="{% url 'user_create' %}" class="btn btn-primary mb-2">+ Tambah User</a>
+<div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Date Joined</th>
+            <th>Last Login</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+  <tbody id="DataTable">
+    {% for user in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.date_joined }}</td>
+        <td>{{ user.last_login }}</td>
+        <td>
+            <a href="{% url 'user_update' user.pk %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'user_delete' user.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+        </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

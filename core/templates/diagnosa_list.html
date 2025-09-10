@@ -1,0 +1,30 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+<h2>Daftar Diagnosa</h2>
+<a href="{% url 'diagnosa_create' %}" class="btn btn-primary mb-2">+ Tambah Diagnosis</a>
+<div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Solusi</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+    <tbody id="DataTable">
+        {% for d in diagnosas %}
+        <tr>
+            <td><label>{{ d.kode }}</label></td>
+            <td><label>{{ d.nama }}</label></td>
+            <td><label>{{ d.solusi }}</label></td>
+            <td>
+                <a href="{% url 'diagnosa_update' d.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'diagnosa_delete' d.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --sidebar-bg: #f8f9fa;
+            --sidebar-hover: #e9ecef;
+            --sidebar-active: #0d6efd;
+            --sidebar-active-text: #ffffff;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.4rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .user-dropdown img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        /* Sidebar styling */
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            height: calc(100vh - 56px);
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+            padding-top: 1.5rem;
+            overflow-y: auto;
+        }
+        
+        .sidebar-heading {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar .nav-link {
+            color: #495057;
+            font-weight: 500;
+            border-radius: 5px;
+            margin: 0.2rem 0.7rem;
+            padding: 0.7rem 1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: var(--sidebar-hover);
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: var(--sidebar-active);
+            color: var(--sidebar-active-text);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main content area */
+        .main-content {
+            padding: 1.5rem;
+            min-height: calc(100vh - 56px);
+        }
+        
+        /* Card styling */
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            font-weight: 600;
+            border-bottom: none;
+            padding: 1rem 1.25rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+        }
+    /* Search field */
+    .search-container {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-container i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+
+    #CariData {
+        padding-left: 40px;
+        background-color: var(--gray-light);
+        border: 1px solid transparent;
+    }
+
+    #CariData:focus {
+        background-color: white;
+        border: 1px solid var(--primary-light);
+    }
+</style>
+</head>
+<body>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'dashboard' %}">
+                <i class="fas fa-hospital me-2"></i>Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <form class="d-flex ms-auto me-3">
+                    <!-- <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="search" id="CariData" class="form-control" placeholder="Cari...">
+                    </div> -->
+                    <!-- <div class="input-group">
+                        <input class="form-control" type="search" placeholder="Search..." aria-label="Search">
+                        <button class="btn btn-outline-light" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div> -->
+                </form>
+                <ul class="navbar-nav">
+                    <!-- <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                3
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><h6 class="dropdown-header">Notifications</h6></li>
+                            <li><a class="dropdown-item" href="#">New user registered</a></li>
+                            <li><a class="dropdown-item" href="#">System update completed</a></li>
+                            <li><a class="dropdown-item" href="#">Database backup ready</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-primary" href="#">View all notifications</a></li>
+                        </ul>
+                    </li> -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <span class="d-none d-lg-inline me-2"><i class="fas fa-gear"></i></span>
+                            <!-- <img src="/api/placeholder/32/32" alt="User" class="user-avatar"> -->
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 d-md-block sidebar p-0">
+                <div class="position-sticky">
+                    <div class="sidebar-heading">Core</div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="sidebar-heading mt-3">Management</div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'gejala_list' %}active{% endif %}" href="{% url 'gejala_list' %}">
+                                <i class="fas fa-stethoscope"></i>
+                                Kelola Gejala
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'diagnosa_list' %}active{% endif %}" href="{% url 'diagnosa_list' %}">
+                                <i class="fas fa-clipboard-check"></i>
+                                Kelola Diagnosa
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'rule_list' %}active{% endif %}" href="{% url 'rule_list' %}">
+                                <i class="fas fa-sitemap"></i>
+                                Kelola Rule
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="sidebar-heading mt-3">Administration</div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'user_list' %}active{% endif %}" href="{% url 'user_list' %}">
+                                <i class="fas fa-users"></i>
+                                Kelola User
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </a>
+                        </li> -->
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-10 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                    <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+                    <div class="btn-toolbar">
+                        {% block page_actions %}{% endblock %}
+                    </div>
+                </div>
+                
+                {% block content %}
+                <!-- Content will be placed here -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="bg-light py-3 border-top">
+        <div class="container-fluid">
+            <div class="text-center text-muted">
+                <small>&copy; 2025 Diagnosis Kerusakan Mesin Motor Matic Injeksi | Admin Panel</small>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle active class in sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            sidebarLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href !== '#' && currentPath.includes(href)) {
+                    link.classList.add('active');
+                }
+            });
+            const searchData = document.getElementById('CariData');
+            if (searchData) {
+                searchData.addEventListener('input', function() {
+                const keyword = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#DataTable tr');
+                
+                rows.forEach(row => {
+                    const text = Array.from(row.querySelectorAll('label'))
+                                    .map(label => label.innerText.toLowerCase())
+                                    .join(' ');
+                    row.style.display = text.includes(keyword) ? '' : 'none';
+                });
+                });
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

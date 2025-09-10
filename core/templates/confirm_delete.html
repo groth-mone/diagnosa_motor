@@ -1,0 +1,9 @@
+{% extends 'base_admin.html' %}
+{% block content %}
+<h3>Yakin ingin menghapus: {{ object }}?</h3>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+  <a href="javascript:history.back()" class="btn btn-secondary">Batal</a>
+</form>
+{% endblock %}
