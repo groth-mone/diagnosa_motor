@@ -44,9 +44,10 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Run tests with pytest
+    - name: Run migrations and tests
       env:
         DJANGO_SETTINGS_MODULE: core.settings
+        PYTHONPATH: ${{ github.workspace }}
       run: |
         python manage.py migrate --noinput
         pytest --ds=core.settings --cov=. --cov-report=xml
