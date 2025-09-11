@@ -12,49 +12,88 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     strategy:
       matrix:
         python-version: [ "3.9", "3.10", "3.11" ]
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Set up Python
-      uses: actions/setup-python@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4  # Updated to v4
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Cache pip
+    
+    - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
           ${{ runner.os }}-pip-
-
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install Django
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install flake8 pytest pytest-django pytest-cov codecov
-
+    
     - name: Lint with flake8
       run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || true
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics || true
-
-    - name: Run migrations and tests
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Create test database and run migrations
       env:
         DJANGO_SETTINGS_MODULE: core.settings
         PYTHONPATH: ${{ github.workspace }}
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
       run: |
-        python manage.py migrate --noinput
-        pytest --ds=core.settings --cov=. --cov-report=xml
-
+        python manage.py collectstatic --noinput --verbosity 0
+        python manage.py migrate --noinput --verbosity 0
+    
+    - name: Run tests with coverage
+      env:
+        DJANGO_SETTINGS_MODULE: core.settings
+        PYTHONPATH: ${{ github.workspace }}
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+      run: |
+        pytest --ds=core.settings --cov=. --cov-report=xml --cov-report=term-missing -v
+    
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
         fail_ci_if_error: true
+        verbose: true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security checks
+      run: |
+        pip install bandit safety
+        bandit -r . -f json || true
+        safety check || true
