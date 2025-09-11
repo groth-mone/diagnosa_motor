@@ -3,3 +3,4 @@ pytest
 pytest-django
 pytest-cov
 flake8
+dj-database-url>=0.5.0
