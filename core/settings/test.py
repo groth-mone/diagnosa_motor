@@ -69,7 +69,8 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
-
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 # Celery settings for testing (if you use Celery)
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
