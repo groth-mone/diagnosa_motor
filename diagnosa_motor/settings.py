@@ -73,6 +73,8 @@ WSGI_APPLICATION = 'diagnosa_motor.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DATABASES = {
     'default': {
